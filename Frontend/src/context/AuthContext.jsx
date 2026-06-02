@@ -35,7 +35,7 @@ export const AuthProvider = ({
 
     const res =
       await api.post(
-        "/auth/register",
+        "/api/auth/register",
         formData
       );
 
@@ -50,6 +50,8 @@ export const AuthProvider = ({
     );
 
     setUser(res.data);
+
+    return res.data;
   };
 
   const login = async (
@@ -58,7 +60,7 @@ export const AuthProvider = ({
 
     const res =
       await api.post(
-        "/auth/login",
+        "/api/auth/login",
         formData
       );
 
@@ -73,6 +75,8 @@ export const AuthProvider = ({
     );
 
     setUser(res.data);
+
+    return res.data;
   };
 
   const logout = () => {
