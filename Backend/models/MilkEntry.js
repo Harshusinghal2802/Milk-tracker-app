@@ -1,117 +1,53 @@
-import { useState } from "react";
-import api from "../services/api";
-import toast from "react-hot-toast";
+import mongoose from "mongoose";
 
-const EditEntryModal = ({
-  entry,
-  onClose,
-  refresh,
-}) => {
+const milkEntrySchema = new mongoose.Schema(
+  {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
 
-  const [form, setForm] =
-    useState({
-      liters: entry.liters,
-      pricePerLiter:
-        entry.pricePerLiter,
-      vendor: entry.vendor,
-    });
+    date: {
+      type: Date,
+      required: true,
+    },
 
-  const updateEntry =
-    async () => {
+    liters: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
 
-      try {
+    pricePerLiter: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
 
-        await api.put(
-          `/milk/${entry._id}`,
-          form
-        );
+    total: {
+      type: Number,
+      required: true,
+    },
 
-        toast.success(
-          "Entry Updated"
-        );
+    vendor: {
+      type: String,
+      default: "Regular Milkman",
+    },
 
-        refresh();
+    notes: {
+      type: String,
+      default: "",
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
 
-        onClose();
+const MilkEntry = mongoose.model(
+  "MilkEntry",
+  milkEntrySchema
+);
 
-      } catch {
-
-        toast.error(
-          "Update Failed"
-        );
-      }
-    };
-
-  return (
-    <div className="
-      fixed inset-0
-      bg-black/50
-      flex
-      items-center
-      justify-center
-    ">
-
-      <div className="
-        bg-white
-        p-6
-        rounded-2xl
-        w-96
-      ">
-
-        <h2 className="
-          text-xl font-bold mb-4
-        ">
-          Edit Entry
-        </h2>
-
-        <input
-          type="number"
-          value={form.liters}
-          className="
-          w-full border p-3 mb-3
-          rounded-lg
-        "
-          onChange={(e)=>
-            setForm({
-              ...form,
-              liters:e.target.value
-            })
-          }
-        />
-
-        <input
-          type="number"
-          value={
-            form.pricePerLiter
-          }
-          className="
-          w-full border p-3 mb-3
-          rounded-lg
-        "
-          onChange={(e)=>
-            setForm({
-              ...form,
-              pricePerLiter:e.target.value
-            })
-          }
-        />
-
-        <button
-          onClick={updateEntry}
-          className="
-          bg-blue-600
-          text-white
-          px-4 py-2
-          rounded-lg
-        "
-        >
-          Save
-        </button>
-
-      </div>
-
-    </div>
-  );
-};
-
-export default EditEntryModal;
+export default MilkEntry;
